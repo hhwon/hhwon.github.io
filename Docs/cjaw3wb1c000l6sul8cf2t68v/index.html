@@ -1,0 +1,54 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="author" content="huangwang"><meta name="description" content="技术宅（划掉）|（伪）二次元|"><link rel="alternative" href="/atom.xml" title="HUANGWANG'S BLOG" type="application/atom+xml"><link rel="icon" href="/favicon.png"><title>如何在VPS上搭建自己的个人blog（一） - HUANGWANG'S BLOG</title><link rel="stylesheet" href="/css/main.css"><link rel="stylesheet" href="/js/fancybox/jquery.fancybox.min.css"><!--[if lt IE 9]><script>(function(a,b){a="abbr article aside audio bdi canvas data datalist details dialog figcaption figure footer header hgroup main mark meter nav output progress section summary template time video".split(" ");for(b=a.length-1;b>=0;b--)document.createElement(a[b])})()</script><![endif]--><script src="/js/jquery-3.1.1.min.js"></script><script src="/js/fancybox/jquery.fancybox.min.js"></script></head><body style="opacity:0;"><header class="head"><h1 class="head-title u-fl"><a href="/">HUANGWANG'S BLOG</a></h1><nav class="head-nav u-fr"><ul class="head-nav__list"><li class="head-nav__item"><a class="head-nav__link" href="/archives">MENU</a></li><li class="head-nav__item"><a class="head-nav__link" href="/about">ABOUT</a></li></ul></nav></header><main class="main"><article class="post"><header class="post__head"> <time class="post__time" datetime="2016-11-20T16:17:16.000Z">November 21, 2016</time><h1 class="post__title"><a href="/Docs/cjaw3wb1c000l6sul8cf2t68v/">如何在VPS上搭建自己的个人blog（一）</a></h1><div class="post__main echo"><p>最近折腾于个人博客的建立，一开始建立基于wordpress，但后来听闻Hexo，看后其极简的风格感觉逼格极高，遂开始搭建起基于Hexo的个人Blog。经过一天的折腾，在解决遇到的各种问题后，终于完成了此blog的大体框架。现将搭建过程以及在其中遇到的一系列的问题记录<del>与</del>于此。<br><a id="more"></a></p>
+<ol>
+<li>准备工作</li>
+<li>本地配置</li>
+<li>服务端配置</li>
+</ol>
+<h1 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h1><ul>
+<li><strong>VPS的购置</strong><br>VPS(Virtual Private Server),最近看到一句话，“每一个梦想成为魔法师的男孩应该拥有一个VPS”，VPS将在今后的学习生活中给自己带来意想不到的惊喜。</li>
+<li><strong>域名的购买</strong></li>
+<li><strong>一些基本的软件</strong>(putty,WinSCP等)</li>
+</ul>
+<h1 id="本地配置-这里只介绍win端）"><a href="#本地配置-这里只介绍win端）" class="headerlink" title="本地配置(这里只介绍win端）"></a>本地配置(这里只介绍win端）</h1><ol>
+<li>下载并安装<a href="https://git-scm.com/download/win" target="_blank" rel="noopener">git</a>。</li>
+<li>安装 Node.js。安装Node.js的最佳方式是使用<a href="https://github.com/creationix/nvm" target="_blank" rel="noopener">nvm</a>。  </li>
+</ol>
+<p><strong>wegt:</strong></p>
+<pre><code>wget -qO- https://raw.github.com/creationix/nvm/master/install.sh | sh
+</code></pre><p>安装完成后，重启终端并执行下列命令即可安装 Node.js。  </p>
+<pre><code>$ nvm install stable
+</code></pre><p>或者您也可以下载<a href="http://nodejs.org/" target="_blank" rel="noopener">安装程序</a>来安装。</p>
+<p>3.所有必备的应用程序安装完成后，即可使用 npm 安装 Hexo。  </p>
+<pre><code>$ npm install -g hexo-cli
+</code></pre><p>4.安装 Hexo 完成后，请执行下列命令，Hexo 将会在指定文件夹中新建所需要的文件。  </p>
+<pre><code>$ hexo init &lt;folder&gt;  
+$ cd &lt;folder&gt;  
+$ npm install
+</code></pre><p>这样本地的基本配置就完成了喵~</p>
+<h1 id="服务端配置-这里以Ubuntu-14-04为例）"><a href="#服务端配置-这里以Ubuntu-14-04为例）" class="headerlink" title="服务端配置(这里以Ubuntu 14.04为例）"></a>服务端配置(这里以Ubuntu 14.04为例）</h1><p>服务端上主要需要安装git和nginx<br><strong>1. Server Setup（可选）</strong><br><strong>Step One</strong> — Root Login（使用putty登陆vps,或者使用cmd窗口）<br><strong>Step Two</strong> — Create a New User（这里本着geek的思想以及安全起见）  </p>
+<pre><code>$ adduser demo  #(demo自定义）
+</code></pre><p>  <strong>Step Three</strong> — Root Privileges  </p>
+<pre><code>$ gpasswd -a demo sudo
+</code></pre><p><strong>Step Four</strong> — Add Public Key Authentication (Recommended)<br><em>Generate a Key Pair</em><br>本地窗口输入  </p>
+<pre><code>$local ssh-keygen   #(一路回车或者输入基本信息）
+</code></pre><p><em>Copy the Public Key</em><br>本地窗口输入  </p>
+<pre><code>$local cat ~/.ssh/id_rsa.pub  #(复制）
+</code></pre><p><em>On the server</em>, as the <strong>root</strong> user  </p>
+<pre><code>$ su - demo  
+$ mkdir .ssh  
+$ chmod 700 .ssh  
+$ nano .ssh/authorized_keys
+</code></pre><p>此处粘贴刚才复制的key，esc–ctrl+x–Y 完成。  </p>
+<pre><code>$ chmod 600 .ssh/authorized_keys
+</code></pre><p>至此第一步完成。<br><strong>2. Install Git</strong><br>第一步  </p>
+<pre><code>$ sudo apt-get update
+$ sudo apt-get install git
+</code></pre><p>第二步（Set Up Git）  </p>
+<pre><code>$ git config --global user.name &quot;Your Name&quot;  
+$ git config --global user.email &quot;youremail@domain.com&quot;
+</code></pre><p><strong>3. Install Nginx</strong>  </p>
+<pre><code>$ sudo apt-get install nginx
+</code></pre><p>至此，服务端基本的软件安装完毕，接下来需要开始配置</p>
+</div></header><footer class="post__foot u-cf"><ul class="post__tag u-fl"><li class="post__tag__item"><a class="post__tag__link" href="/tags/Share/">Share</a></li></ul></footer></article><div class="comments" id="lv-container" data-id="city" data-uid="MTAyMC8zMjExMS84Njc1"><script>(function(d, s) {var j, e = d.getElementsByTagName(s)[0];if (typeof LivereTower === 'function') { return; } j = d.createElement(s);j.src = 'https://cdn-city.livere.com/js/embed.dist.js';j.async = true;e.parentNode.insertBefore(j, e);})(document, 'script');</script></div></main><footer class="foot"><div class="foot-copy">&copy; 2016-2017 huangwang</div></footer><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+ga('create','UA-87613819-1');
+ga('send','pageview');</script><script src="/js/scroller.js"></script><script src="/js/main.js"></script></body></html>
