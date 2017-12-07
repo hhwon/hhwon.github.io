@@ -1,0 +1,17 @@
+#### blog
+
+forked from https://github.com/ochukai/hexo-theme-ochuunn
+
+
+
+* 起始页修改主题与样式，更萌！
+* 兼容markdown三级以上标题
+* 更改主题颜色
+* comments开关
+
+TO DO LIST
+
+* 代码高亮优化
+* 字体优化
+* 配置文件提取
+* bug
