@@ -636,8 +636,8 @@ video {
 .foot-copy {
   text-align: center;
   color: #fff;
-  font-size: 12px;
-  font-size: 0.75rem;
+  font-size: 15px;
+  font-size: 0.9375rem;
 }
 .page-menu__item {
   display: inline-block;
