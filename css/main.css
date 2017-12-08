@@ -758,7 +758,7 @@ video {
 }
 .post__main .highlight {
   margin: 1.1em -10px;
-  padding: 2px;
+  padding: 0px;
 }
 .post__main .highlight figcaption {
   padding: 0 45px;
