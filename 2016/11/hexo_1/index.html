@@ -19,7 +19,7 @@
 <p>在blog.git/hooks 目录下新建一个 post-receive 文件：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd /var/repo/blog.git/hooks</span><br><span class="line">vim post-receive</span><br></pre></td></tr></table></figure>
 <p>在 post-receive 文件中写入如下内容：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span>!/bin/sh</span><br><span class="line">git --work-tree=/var/www/hexo --git-dir=/var/repo/blog.git checkout -f</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/sh</span></span><br><span class="line">git --work-tree=/var/www/hexo --git-dir=/var/repo/blog.git checkout -f</span><br></pre></td></tr></table></figure>
 <p>注意，/var/www/hexo 要换成你自己的部署目录，一般可能都是 /var/www/html。上面那句 git 命令可以在我们每次 push 完之后，把部署目录更新到博客的最新生成状态。这样便可以完成达到自动部署的目的了。<br>不要忘记设置这个文件的可执行权限：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod +x post-receive</span><br></pre></td></tr></table></figure>
 </li>
