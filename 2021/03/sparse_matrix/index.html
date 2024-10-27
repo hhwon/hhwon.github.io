@@ -1,38 +1,32 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="author" content="huangwang"><meta name="description" content="技术宅（划掉）|（伪）二次元|"><meta name="theme-color" content="#DC143C"><link rel="alternative" href="/atom.xml" title="HUANGWANG'S BLOG" type="application/atom+xml"><link rel="icon" href="/favicon.png"><title>在Python中如何快速组装稀疏矩阵 - HUANGWANG'S BLOG</title><link rel="stylesheet" href="/css/main.css"><link rel="stylesheet" href="/js/fancybox/jquery.fancybox.min.css"><!--[if lt IE 9]><script>(function(a,b){a="abbr article aside audio bdi canvas data datalist details dialog figcaption figure footer header hgroup main mark meter nav output progress section summary template time video".split(" ");for(b=a.length-1;b>=0;b--)document.createElement(a[b])})()</script><![endif]--><script src="/js/jquery-3.1.1.min.js"></script><script src="/js/fancybox/jquery.fancybox.min.js"></script></head><body style="opacity:0;"><header class="head"><h1 class="head-title u-fl"><a href="/">HUANGWANG'S BLOG</a></h1><nav class="head-nav u-fr"><ul class="head-nav__list"><li class="head-nav__item"><a class="head-nav__link" href="/archives">ARTICLE</a></li><li class="head-nav__item"><a class="head-nav__link" href="/about">ABOUT</a></li></ul></nav></header><main class="main"><article class="post"><header class="post__head"> <time class="post__time" datetime="2021-03-19T16:59:16.000Z">March 20, 2021</time><h1 class="post__title"><a href="/2021/03/sparse_matrix/">在Python中如何快速组装稀疏矩阵</a></h1><div class="post__main echo"><p>在采用Python编写数值计算方法的求解器时，往往需要自己组装求解的刚度矩阵，当矩阵带宽比较大时，采用稠密矩阵（尽管直接组装速度会快些）常常会遇到内存受限的问题。此时，我们会考虑采用稀疏矩阵来存储，这样可以省去为零位置的值，大大节省内存或磁盘的占用。<a id="more"></a><br>在Python中组装刚度矩阵时，这里采用NumPy以及SciPy两个科学计算依赖库。</p>
-<h3 id="NumPy"><a href="#NumPy" class="headerlink" title="NumPy"></a>NumPy</h3><p>NumPy是Python中科学计算的基本软件包。它是一个Python库，提供多维数组对象，各种派生对象（例如蒙版数组和矩阵）以及各种例程，用于对数组进行快速操作，包括数学，逻辑，形状处理，排序，选择，I/O ，离散傅立叶变换，基本线性代数，基本统计运算，随机模拟等等。</p>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 在Python中如何快速组装稀疏矩阵 · HUANGWANG'S BLOG</title><meta name="description" content="在Python中如何快速组装稀疏矩阵 - huangwang"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="https://pstudio.me/atom.xml" title="HUANGWANG'S BLOG"><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="HUANGWANG'S BLOG" type="application/atom+xml">
+</head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/sunchongsheng" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/pinggod" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">在Python中如何快速组装稀疏矩阵</h1><div class="post-info">Mar 20, 2021</div><div class="post-content"><h2 id="在Python中如何快速组装稀疏矩阵"><a href="#在Python中如何快速组装稀疏矩阵" class="headerlink" title="在Python中如何快速组装稀疏矩阵"></a>在Python中如何快速组装稀疏矩阵</h2><p>在采用Python编写数值计算方法的求解器时，往往需要自己组装求解的刚度矩阵，当矩阵带宽比较大时，采用稠密矩阵（尽管直接组装速度会快些）常常会遇到内存受限的问题。此时，我们会考虑采用稀疏矩阵来存储，这样可以省去为零位置的值，大大节省内存或磁盘的占用。<span id="more"></span><br>在Python中组装刚度矩阵时，这里采用NumPy以及SciPy两个科学计算依赖库。</p>
+<ul>
+<li>NumPy<br>```<br>NumPy是Python中科学计算的基本软件包。它是一个Python库，提供多维数组对象，各种派生对象（例如蒙版数组和矩阵）以及各种例程，用于对数组进行快速操作，包括数学，逻辑，形状处理，排序，选择，I/O ，离散傅立叶变换，基本线性代数，基本统计运算，随机模拟等等。</li>
+</ul>
 <p>在安装时需注意其Fortran或C++依赖库laspack、bla等是否存在。推荐使用conda进行安装，其默认采用Intel数学核心库进行编译。MKL较OpenBLAS更快以及更稳定。</p>
-<h3 id="SciPy"><a href="#SciPy" class="headerlink" title="SciPy"></a>SciPy</h3><p>数值算法和特定领域的工具箱，包括信号处理，优化，统计等。<br>这里仅使用到Sparse linear algebra模块</p>
-<p>在组装过程中，采用SciPy中的Coo_Matrix构造稀疏矩阵，只需构造row，col以及data。在构造过程中，存在三个难点，在此记录。</p>
-<ul>
-<li>提取ndarray中的非零元素</li>
-</ul>
-<p>比较Python中常用的几种方式的提取效率<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> timeit</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> cv2</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">check_speed</span><span class="params">(a,positions)</span>:</span></span><br><span class="line">    print(<span class="string">'\t Number of nonzero elements:'</span>,np.sum(a&gt;<span class="number">0</span>))</span><br><span class="line">    print(<span class="string">'\t Using cv2:'</span>, timeit.timeit(<span class="keyword">lambda</span>:cv2.findNonZero((a)).squeeze()[:,<span class="number">0</span>],number=<span class="number">100</span>)/<span class="number">100.0</span>, <span class="string">'s'</span>)</span><br><span class="line">    print(<span class="string">'\t Using numpy nonzero:'</span>, timeit.timeit(<span class="keyword">lambda</span>:np.nonzero(a)[<span class="number">1</span>],number=<span class="number">100</span>)/<span class="number">100.0</span>, <span class="string">'s'</span>)</span><br><span class="line">    print(<span class="string">'\t Using readily made matrix:'</span>, timeit.timeit(<span class="keyword">lambda</span>:positions[(np.abs(a)&gt;<span class="number">1e-16</span>)[<span class="number">0</span>]],number=<span class="number">100</span>)/<span class="number">100.0</span> ,<span class="string">'s'</span>)</span><br><span class="line">    print(<span class="string">'\t Using readily made matrix:'</span>, timeit.timeit(<span class="keyword">lambda</span>:np.arange(a.size),number=<span class="number">100</span>)/<span class="number">100.0</span> ,<span class="string">'s'</span>)</span><br></pre></td></tr></table></figure></p>
-<p>output<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Number of nonzero elements: 499413</span><br><span class="line">Using cv2: 0.02275758675998077 s</span><br><span class="line">Using numpy nonzero: 0.007664396830368787 s</span><br><span class="line">Using readily made matrix: 0.0030909083294682204 s</span><br></pre></td></tr></table></figure></p>
-<p>可以看出使用readily made matrix的方式速度最快，因为这里处理的是一维数组，对于多维数组而言，cv2为最优，numpy nonzero次之。</p>
-<ul>
-<li>组装row，col，data</li>
-</ul>
-<p>遍历刚度矩阵中的每一行，将数据填入row，col，data数组中，我们一般采用NumPy中的concatenate方法进行连接，值得注意的是，不应该一边遍历一边连接，最有效的方法应该是将每次遍历的结果Append至列表中，最后采用concatenate一次性连接。</p>
-<ul>
-<li>如何让节点的遍历更快速</li>
-</ul>
-<p>一般而言，遍历每一个点的操作应该是相互独立的，可对这部分进行并行编程，充分利用CPU的多核性能进行计算，Python中可考虑采用multiprocessing模块进行处理。当然，这当中，代码的设计、中间量的内存管理等至关重要。</p>
-<hr>
-<p>参考</p>
-<ul>
-<li><a href="https://stackoverflow.com/questions/40631883/fast-way-to-find-nonzero-elements-positions-in-2d-array-in-python" target="_blank" rel="noopener">Fast way to find nonzero elements positions in 2d array in Python</a></li>
-<li><a href="https://stackoverflow.com/questions/64350649/fastest-way-to-concatenate-slices-of-numpy-array" target="_blank" rel="noopener">Fastest way to concatenate slices of numpy array</a></li>
-</ul>
-</div></header><footer class="post__foot u-cf"><ul class="post__tag u-fl"><li class="post__tag__item"><a class="post__tag__link" href="/tags/Tech/">Tech</a></li></ul></footer></article><div id="disqus_thread"></div><script>var disqus_config = function () {
-  this.page.url = "https://pstudio.me/2021/03/sparse_matrix/";
-  this.page.identifier = "2021/03/sparse_matrix/";
-};
+<pre><code>* SciPy
+</code></pre>
+<p>数值算法和特定领域的工具箱，包括信号处理，优化，统计等。<br>这里仅使用到Sparse linear algebra模块</p>
+<pre><code>在组装过程中，采用SciPy中的Coo_Matrix构造稀疏矩阵，只需构造row，col以及data。在构造过程中，存在三个难点，在此记录。
 
-(function () {
-  var d = document, s = d.createElement('script');
-  s.src = 'https://huangwang.disqus.com/embed.js';
-  s.setAttribute('data-timestamp', +new Date());
-  (d.head || d.body).appendChild(s);
-})();</script></main><footer class="foot"><div class="foot-copy">&copy; 2016-2021 huangwang</div></footer><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
-ga('create','UA-87613819-1');
-ga('send','pageview');</script><script src="/js/scroller.js"></script><script src="/js/main.js"></script></body></html>
+* 提取ndarray中的非零元素
+
+比较Python中常用的几种方式的提取效率
+</code></pre>
+<p>import timeit<br>import numpy as np<br>import cv2<br>def check_speed(a,positions):<br>    print(‘\t Number of nonzero elements:’,np.sum(a&gt;0))<br>    print(‘\t Using cv2:’, timeit.timeit(lambda:cv2.findNonZero((a)).squeeze()[:,0],number=100)/100.0, ‘s’)<br>    print(‘\t Using numpy nonzero:’, timeit.timeit(lambda:np.nonzero(a)[1],number=100)/100.0, ‘s’)<br>    print(‘\t Using readily made matrix:’, timeit.timeit(lambda:positions[(np.abs(a)&gt;1e-16)[0]],number=100)/100.0 ,’s’)<br>    print(‘\t Using readily made matrix:’, timeit.timeit(lambda:np.arange(a.size),number=100)/100.0 ,’s’)</p>
+<pre><code>output
+</code></pre>
+<p>Number of nonzero elements: 499413<br>Using cv2: 0.02275758675998077 s<br>Using numpy nonzero: 0.007664396830368787 s<br>Using readily made matrix: 0.0030909083294682204 s</p>
+<pre><code>可以看出使用readily made matrix的方式速度最快，因为这里处理的是一维数组，对于多维数组而言，cv2为最优，numpy nonzero次之。
+* 组装row，col，data
+</code></pre>
+<p>遍历刚度矩阵中的每一行，将数据填入row，col，data数组中，我们一般采用NumPy中的concatenate方法进行连接，值得注意的是，不应该一边遍历一边连接，最有效的方法应该是将每次遍历的结果Append至列表中，最后采用concatenate一次性连接。</p>
+<pre><code>* 如何让节点的遍历更快速
+</code></pre>
+<p>一般而言，遍历每一个点的操作应该是相互独立的，可对这部分进行并行编程，充分利用CPU的多核性能进行计算，Python中可考虑采用multiprocessing模块进行处理。当然，这当中，代码的设计、中间量的内存管理等至关重要。</p>
+<h2 id=""><a href="#" class="headerlink" title="```"></a>```</h2><p>参考</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/40631883/fast-way-to-find-nonzero-elements-positions-in-2d-array-in-python">Fast way to find nonzero elements positions in 2d array in Python</a></li>
+<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/64350649/fastest-way-to-concatenate-slices-of-numpy-array">Fastest way to concatenate slices of numpy array</a></li>
+</ul>
+</div></article></div></main><footer><div class="paginator"><a href="/2021/03/queue/" class="prev">PREV</a><a href="/2020/08/pythonocc_install/" class="next">NEXT</a></div><div class="copyright"><p>© 2015 - 2024 <a href="https://pstudio.me">huangwang</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>

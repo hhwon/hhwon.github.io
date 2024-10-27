@@ -1,36 +1,70 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="author" content="huangwang"><meta name="description" content="技术宅（划掉）|（伪）二次元|"><meta name="theme-color" content="#DC143C"><link rel="alternative" href="/atom.xml" title="HUANGWANG'S BLOG" type="application/atom+xml"><link rel="icon" href="/favicon.png"><title>pythonOCC在Ubuntu 18.04上安装记录 - HUANGWANG'S BLOG</title><link rel="stylesheet" href="/css/main.css"><link rel="stylesheet" href="/js/fancybox/jquery.fancybox.min.css"><!--[if lt IE 9]><script>(function(a,b){a="abbr article aside audio bdi canvas data datalist details dialog figcaption figure footer header hgroup main mark meter nav output progress section summary template time video".split(" ");for(b=a.length-1;b>=0;b--)document.createElement(a[b])})()</script><![endif]--><script src="/js/jquery-3.1.1.min.js"></script><script src="/js/fancybox/jquery.fancybox.min.js"></script></head><body style="opacity:0;"><header class="head"><h1 class="head-title u-fl"><a href="/">HUANGWANG'S BLOG</a></h1><nav class="head-nav u-fr"><ul class="head-nav__list"><li class="head-nav__item"><a class="head-nav__link" href="/archives">ARTICLE</a></li><li class="head-nav__item"><a class="head-nav__link" href="/about">ABOUT</a></li></ul></nav></header><main class="main"><article class="post"><header class="post__head"> <time class="post__time" datetime="2020-08-28T00:59:16.000Z">August 28, 2020</time><h1 class="post__title"><a href="/2020/08/pythonocc_install/">pythonOCC在Ubuntu 18.04上安装记录</a></h1><div class="post__main echo"><p>这里记录在Ubuntu 18.04上安装PythonOCC-core的整个过程，方便以后复现。<a id="more"></a></p>
-<h2 id="快速安装"><a href="#快速安装" class="headerlink" title="快速安装"></a>快速安装</h2><h3 id="Python-3-6-amp-3-7"><a href="#Python-3-6-amp-3-7" class="headerlink" title="Python 3.6 &amp; 3.7"></a>Python 3.6 &amp; 3.7</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># first create an environment</span></span><br><span class="line">conda create --name=whatever-name python=3.7</span><br><span class="line"><span class="built_in">source</span> activate whatever-name</span><br><span class="line">conda install -c dlr-sc pythonocc-core=7.4.0</span><br></pre></td></tr></table></figure>
-<h3 id="Python-3-7-amp-3-8"><a href="#Python-3-7-amp-3-8" class="headerlink" title="Python 3.7 &amp; 3.8"></a>Python 3.7 &amp; 3.8</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># first create an environment</span></span><br><span class="line">conda create --name=whatever-name python=3.8</span><br><span class="line"><span class="built_in">source</span> activate whatever-name</span><br><span class="line">conda install -c conda-forge pythonocc-core=7.4.0</span><br></pre></td></tr></table></figure>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> pythonOCC在Ubuntu 18.04上安装记录 · HUANGWANG'S BLOG</title><meta name="description" content="pythonOCC在Ubuntu 18.04上安装记录 - huangwang"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="https://pstudio.me/atom.xml" title="HUANGWANG'S BLOG"><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="HUANGWANG'S BLOG" type="application/atom+xml">
+</head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/sunchongsheng" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/pinggod" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">pythonOCC在Ubuntu 18.04上安装记录</h1><div class="post-info">Aug 28, 2020</div><div class="post-content"><p>这里记录在Ubuntu 18.04上安装PythonOCC-core的整个过程，方便以后复现。<span id="more"></span></p>
+<h2 id="快速安装"><a href="#快速安装" class="headerlink" title="快速安装"></a>快速安装</h2><h3 id="Python-3-6-amp-3-7"><a href="#Python-3-6-amp-3-7" class="headerlink" title="Python 3.6 &amp; 3.7"></a>Python 3.6 &amp; 3.7</h3><pre><code class="bash"># first create an environment
+conda create --name=whatever-name python=3.7
+source activate whatever-name
+conda install -c dlr-sc pythonocc-core=7.4.0
+</code></pre>
+<h3 id="Python-3-7-amp-3-8"><a href="#Python-3-7-amp-3-8" class="headerlink" title="Python 3.7 &amp; 3.8"></a>Python 3.7 &amp; 3.8</h3><pre><code class="bash"># first create an environment
+conda create --name=whatever-name python=3.8
+source activate whatever-name
+conda install -c conda-forge pythonocc-core=7.4.0
+</code></pre>
 <p>以上两种情况均采用conda安装，十分方便快速，但是有时conda又显得臃肿，尽管我用的是miniconda。</p>
 <h2 id="编译安装"><a href="#编译安装" class="headerlink" title="编译安装"></a>编译安装</h2><h3 id="依赖安装"><a href="#依赖安装" class="headerlink" title="依赖安装"></a>依赖安装</h3><ul>
 <li>Python 3.6.x or 3.7.x or 3.8.x</li>
 </ul>
 <p>如何安装这里不做赘述，一般Ubuntu 18.04会自带Python 3.6.9</p>
 <ul>
-<li>OpenCascade 7.4.0<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 环境依赖安装</span></span><br><span class="line">sudo apt-get install software-properties-common</span><br><span class="line">sudo apt-get install libtool autoconf automake gfortran gdebi</span><br><span class="line">sudo apt-get install gcc-multilib libxi-dev libxmu-dev libxmu-headers</span><br><span class="line">sudo apt-get install libx11-dev mesa-common-dev libglu1-mesa-dev</span><br><span class="line">sudo apt-get install libfontconfig1-dev</span><br><span class="line"><span class="comment"># Freetype 安装（2.8）</span></span><br><span class="line">sudo apt install freetype2-demos</span><br><span class="line"><span class="comment"># Tcl/TK 安装 （8.6）</span></span><br><span class="line">sudo apt-get install tcl tcl-dev tk tk-dev</span><br><span class="line"><span class="comment"># OpenCascade 安装</span></span><br><span class="line">下载OpenCascade源码从https://www.opencascade.com/content/download-center</span><br><span class="line">tar xf opencascade-7.4.0.tar.gz</span><br><span class="line">mkdir tmp</span><br><span class="line"><span class="built_in">cd</span> tmp</span><br><span class="line">cmake ../opencascade-7.4.0</span><br><span class="line">make</span><br><span class="line">make install</span><br><span class="line"><span class="comment"># SWIG 安装</span></span><br><span class="line">sudo apt-get install -y swig</span><br></pre></td></tr></table></figure>
+<li><p>OpenCascade 7.4.0</p>
+<pre><code class="bash"># 环境依赖安装
+sudo apt-get install software-properties-common
+sudo apt-get install libtool autoconf automake gfortran gdebi
+sudo apt-get install gcc-multilib libxi-dev libxmu-dev libxmu-headers
+sudo apt-get install libx11-dev mesa-common-dev libglu1-mesa-dev
+sudo apt-get install libfontconfig1-dev
+# Freetype 安装（2.8）
+sudo apt install freetype2-demos
+# Tcl/TK 安装 （8.6）
+sudo apt-get install tcl tcl-dev tk tk-dev
+# OpenCascade 安装
+下载OpenCascade源码从https://www.opencascade.com/content/download-center
+tar xf opencascade-7.4.0.tar.gz
+mkdir tmp
+cd tmp
+cmake ../opencascade-7.4.0
+make
+make install
+# SWIG 安装
+sudo apt-get install -y swig
+</code></pre>
+<h3 id="PythonOCC安装"><a href="#PythonOCC安装" class="headerlink" title="PythonOCC安装"></a>PythonOCC安装</h3><pre><code class="bash">git clone git://github.com/tpaviot/pythonocc-core.git
+cd pythonocc-core
+mkdir cmake-build
+cd cmake-build
+cmake ..
+make
+sudo make install
+</code></pre>
+<h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3></li>
+<li><p>cmake 安装</p>
 </li>
 </ul>
-<h3 id="PythonOCC安装"><a href="#PythonOCC安装" class="headerlink" title="PythonOCC安装"></a>PythonOCC安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> git://github.com/tpaviot/pythonocc-core.git</span><br><span class="line"><span class="built_in">cd</span> pythonocc-core</span><br><span class="line">mkdir cmake-build</span><br><span class="line"><span class="built_in">cd</span> cmake-build</span><br><span class="line">cmake ..</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
-<h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><ul>
-<li>cmake 安装</li>
-</ul>
-<p>由于pythonocc编译时cmake版本需要在3.14以上，而Ubuntu 18.04采用apt直接安装的版本低于此版本，需要重新安装。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 卸载旧的cmake</span></span><br><span class="line">sudo apt purge --auto-remove cmake</span><br><span class="line"><span class="comment"># Obtain a copy of the signing key</span></span><br><span class="line">wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2&gt;/dev/null | gpg --dearmor - | sudo tee /etc/apt/trusted.gpg.d/kitware.gpg &gt;/dev/null</span><br><span class="line"><span class="comment"># For Ubuntu Bionic Beaver (18.04)</span></span><br><span class="line">sudo apt-add-repository <span class="string">'deb https://apt.kitware.com/ubuntu/ bionic main'</span></span><br><span class="line"><span class="comment"># Update and install</span></span><br><span class="line">sudo apt update</span><br><span class="line">sudo apt install cmake</span><br></pre></td></tr></table></figure></p>
+<p>由于pythonocc编译时cmake版本需要在3.14以上，而Ubuntu 18.04采用apt直接安装的版本低于此版本，需要重新安装。</p>
+<pre><code class="bash"># 卸载旧的cmake
+sudo apt purge --auto-remove cmake
+# Obtain a copy of the signing key
+wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2&gt;/dev/null | gpg --dearmor - | sudo tee /etc/apt/trusted.gpg.d/kitware.gpg &gt;/dev/null
+# For Ubuntu Bionic Beaver (18.04)
+sudo apt-add-repository &#39;deb https://apt.kitware.com/ubuntu/ bionic main&#39;
+# Update and install
+sudo apt update
+sudo apt install cmake
+</code></pre>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
-<li><a href="https://github.com/tpaviot/pythonocc-core/blob/master/INSTALL.md" target="_blank" rel="noopener">pythonocc-core安装指南</a></li>
-<li><a href="https://www.realglitch.com/2020/04/how-to-install-opencascade-7-4-on-ubuntu-18-04-lts/#:~:text=Download%20the%20OpenCascade%207.4%20source,start%20configuration%20with%20key%20c." target="_blank" rel="noopener">opencascade安装指南</a></li>
-<li><a href="http://ubuntuhandbook.org/index.php/2017/06/install-freetype-2-8-in-ubuntu-16-04-17-04/#:~:text=Install%20FreeType%202.8%20via%20PPA%20in%20Ubuntu%3A&amp;text=Type%20in%20your%20password%20\(no,ppa%20description%20and%20hit%20Enter.&amp;text=Or%20you%20can%20remove%20PPA,Updates%20utility%20Other%20Software%20tab." target="_blank" rel="noopener">freetype安装指南</a></li>
-<li><a href="https://zoomadmin.com/HowToInstall/UbuntuPackage/swig" target="_blank" rel="noopener">swig安装指南</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/tpaviot/pythonocc-core/blob/master/INSTALL.md">pythonocc-core安装指南</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.realglitch.com/2020/04/how-to-install-opencascade-7-4-on-ubuntu-18-04-lts/#:~:text=Download%20the%20OpenCascade%207.4%20source,start%20configuration%20with%20key%20c.">opencascade安装指南</a></li>
+<li><a target="_blank" rel="noopener" href="http://ubuntuhandbook.org/index.php/2017/06/install-freetype-2-8-in-ubuntu-16-04-17-04/#:~:text=Install%20FreeType%202.8%20via%20PPA%20in%20Ubuntu%3A&text=Type%20in%20your%20password%20(no,ppa%20description%20and%20hit%20Enter.&text=Or%20you%20can%20remove%20PPA,Updates%20utility%20Other%20Software%20tab.">freetype安装指南</a></li>
+<li><a target="_blank" rel="noopener" href="https://zoomadmin.com/HowToInstall/UbuntuPackage/swig">swig安装指南</a></li>
 </ul>
-</div></header><footer class="post__foot u-cf"><ul class="post__tag u-fl"><li class="post__tag__item"><a class="post__tag__link" href="/tags/Share/">Share</a></li></ul></footer></article><div id="disqus_thread"></div><script>var disqus_config = function () {
-  this.page.url = "https://pstudio.me/2020/08/pythonocc_install/";
-  this.page.identifier = "2020/08/pythonocc_install/";
-};
-
-(function () {
-  var d = document, s = d.createElement('script');
-  s.src = 'https://huangwang.disqus.com/embed.js';
-  s.setAttribute('data-timestamp', +new Date());
-  (d.head || d.body).appendChild(s);
-})();</script></main><footer class="foot"><div class="foot-copy">&copy; 2016-2021 huangwang</div></footer><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
-ga('create','UA-87613819-1');
-ga('send','pageview');</script><script src="/js/scroller.js"></script><script src="/js/main.js"></script></body></html>
+</div></article></div></main><footer><div class="paginator"><a href="/2021/03/sparse_matrix/" class="prev">PREV</a><a href="/2020/08/memory/" class="next">NEXT</a></div><div class="copyright"><p>© 2015 - 2024 <a href="https://pstudio.me">huangwang</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>
