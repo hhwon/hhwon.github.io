@@ -15,7 +15,7 @@
 <p>接下来就是将数据盘上的内容全部转移到系统盘上，数据盘上<code>/usr</code>是无法直接umount的，我也是一头雾水，当时，接触到了VNC，一直想在其上突破，只可惜以失败告终。好在得到了Monad大佬的帮助，瞬时茅塞顿开。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mkdir /tmp/root                # 新建一文件夹用来挂载系统盘</span><br><span class="line">mount --bind / /tmp/root       # 将系统盘挂载至上面新建的文件夹</span><br><span class="line">rsync -av /usr /tmp/root/usr   # 将数据盘上的数据拷贝至系统盘中的/usr文件夹</span><br></pre></td></tr></table></figure>
 <p>注释或删掉<code>/etc/fstab</code>中自行配置的数据盘的相关配置，再重启实例大概就解决了。</p>
-</div></article></div></main><footer><div class="paginator"><a href="/2020/08/wordpress/" class="prev">PREV</a><a href="/2019/04/3years/" class="next">NEXT</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'seansun';
+</div></article></div></main><footer><div class="paginator"><a href="/2020/08/wordpress/" class="prev">PREV</a><a href="/2019/04/3years/" class="next">NEXT</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'huangwang';
 var disqus_identifier = '2019/06/qcloud/';
 var disqus_title = '记一次腾讯云实例迁移';
 var disqus_url = 'https://pstudio.me/2019/06/qcloud/';
@@ -23,4 +23,4 @@ var disqus_url = 'https://pstudio.me/2019/06/qcloud/';
     var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
     dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
     (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-})();</script><script id="dsq-count-scr" src="//seansun.disqus.com/count.js" async></script><div class="copyright"><p>© 2016 - 2024 <a href="https://pstudio.me">huangwang</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>
+})();</script><script id="dsq-count-scr" src="//huangwang.disqus.com/count.js" async></script><div class="copyright"><p>© 2016 - 2024 <a href="https://pstudio.me">huangwang</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>
