@@ -1,0 +1,26 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 记一次腾讯云实例迁移 · HUANGWANG'S BLOG</title><meta name="description" content="记一次腾讯云实例迁移 - huangwang"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="https://pstudio.me/atom.xml" title="HUANGWANG'S BLOG"><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="HUANGWANG'S BLOG" type="application/atom+xml">
+</head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="/about/" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="https://x.com/a_hwon" target="_blank" class="nav-list-link">X</a></li><li class="nav-list-item"><a href="https://github.com/hhwon" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">记一次腾讯云实例迁移</h1><div class="post-info">Jun 26, 2019</div><div class="post-content"><p>迫于最近的一台Debian 9的实例即将过期，本着节约资金的原则，又开了一年的学生机。<span id="more"></span></p>
+<h3 id="原由"><a href="#原由" class="headerlink" title="原由"></a>原由</h3><p>1核1G, 50G数据盘，50G系统盘，当初搭建环境的时候，也是考虑十分不足，为今天埋下了坑。因为Mysql上要存储大量的数据（高达30G），故将mysql所在的文件夹<code>/usr</code>放在了数据盘，并清空了系统盘上的<code>/usr</code>内的所有文件（掩面）。</p>
+<h3 id="行动"><a href="#行动" class="headerlink" title="行动"></a>行动</h3><p>一开始迁移的时候是这么考虑的，将系统盘制作镜像，数据盘制作快照并新建硬盘，挂载在新的实例上。殊不知却忽视了制作系统镜像时的小提示</p>
+<blockquote>
+<p>Linux实例制作自定义镜像请确认 /etc/fstab不包含数据盘配置，否则会导致使用该镜像创建的实例无法正常启动。如果有挂载数据盘， 需要注释或删掉/etc/fstab中自行配置的数据盘的相关配置。</p>
+</blockquote>
+<p>用过aws之后，体验qcloud，不得不吐槽一番，其制作镜像的速度真慢。当然，我这种情况，就算注释掉了<code>/etc/fstab</code>也是没用的，因为系统盘的<code>/usr</code>被我清空了。所以才导致了一下的情况。</p>
+<ul>
+<li>重装系统过程中，一直提示重装系统，导致我边安装边吐槽良心云真垃圾。</li>
+<li>假的重装完毕后，采用<code>ssh</code>无法登入，一直提示<code>time out</code></li>
+</ul>
+<p>此时，我也大概了解到是因为/usr确实的缘故，但Linux技术实在比较菜，不知如何下手，当时就想将原实例系统盘扩容，再将数据盘内/usr的数据迁移至系统盘，这里不得不说，qcloud居然不支持直接对系统盘扩容，只能在重装系统的时候对系统盘扩容。考虑到风险，还是先备份了全部盘，并制作了镜像，开始尝试对原实例进行重装系统，此时，考虑到原实例会自动挂载数据盘，重装后应该也不会有问题吧，结果，问题依旧，原实例都无法启动操作了。至此，深感无奈，感觉自己没什么能做的了（当时还不知道使用VNC），是不是只能在新实例上挂载数据盘，手动cp了，系统盘快照不能制作新硬盘，其上的数据是不是没希望了，当时感觉好绝望。</p>
+<p>没办法，只能发工单了，还好，工单解决还比较顺利，也让我了解到了VNC以及Linux的各种启动模式。还行，比较顺利地完成了对原实例扩容。</p>
+<p>接下来就是将数据盘上的内容全部转移到系统盘上，数据盘上<code>/usr</code>是无法直接umount的，我也是一头雾水，当时，接触到了VNC，一直想在其上突破，只可惜以失败告终。好在得到了Monad大佬的帮助，瞬时茅塞顿开。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mkdir /tmp/root                # 新建一文件夹用来挂载系统盘</span><br><span class="line">mount --bind / /tmp/root       # 将系统盘挂载至上面新建的文件夹</span><br><span class="line">rsync -av /usr /tmp/root/usr   # 将数据盘上的数据拷贝至系统盘中的/usr文件夹</span><br></pre></td></tr></table></figure>
+<p>注释或删掉<code>/etc/fstab</code>中自行配置的数据盘的相关配置，再重启实例大概就解决了。</p>
+</div></article></div></main><footer><div class="paginator"><a href="/2020/08/wordpress/" class="prev">PREV</a><a href="/2019/04/3years/" class="next">NEXT</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'seansun';
+var disqus_identifier = '2019/06/qcloud/';
+var disqus_title = '记一次腾讯云实例迁移';
+var disqus_url = 'https://pstudio.me/2019/06/qcloud/';
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//seansun.disqus.com/count.js" async></script><div class="copyright"><p>© 2016 - 2024 <a href="https://pstudio.me">huangwang</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>

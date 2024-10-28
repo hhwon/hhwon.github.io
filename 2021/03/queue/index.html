@@ -1,0 +1,50 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> Python中的消息队列工具 · HUANGWANG'S BLOG</title><meta name="description" content="Python中的消息队列工具 - huangwang"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="https://pstudio.me/atom.xml" title="HUANGWANG'S BLOG"><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="HUANGWANG'S BLOG" type="application/atom+xml">
+</head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="/about/" target="_self" class="nav-list-link">ABOUT</a></li><li class="nav-list-item"><a href="https://x.com/a_hwon" target="_blank" class="nav-list-link">X</a></li><li class="nav-list-item"><a href="https://github.com/hhwon" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">Python中的消息队列工具</h1><div class="post-info">Mar 24, 2021</div><div class="post-content"><h3 id="场景"><a href="#场景" class="headerlink" title="场景"></a>场景</h3><ul>
+<li><p>未使用消息队列工具时</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">用户发请求---&gt;服务端接受处理---&gt;服务端处理(花很长时间)---&gt;用户收到结果</span><br></pre></td></tr></table></figure>
+<p>当服务端处理需要消耗比较长的时间且大量消耗CPU资源时，客户端与服务端的连接需要一直保持，同时，当大量的请求涌入时，可能会造成拥堵或者资源耗尽，此时则需要对客户端提交的请求进行有序的处理，引入消息队列工具。<span id="more"></span></p>
+</li>
+<li><p>使用消息队列工具后</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">用户发请求---&gt;服务端接受请求---&gt;服务端把要处理的函数以及参数交给task queue，并返回task_id （很快）---&gt;用户收到task_id（请求已受理，但是还未完成，用户可用task_id对请求的状态进行查询）</span><br></pre></td></tr></table></figure>
+<p>用户发多少请求用户说了算，但是具体什么时间真正处理这个请求里的操作服务端说了算。消息队列工具比较适用于比较慢（不管是慢在 I/O 还是慢在 CPU ）的操作，这种操作用户并不急着要结果，但是他在乎的是服务端收到这个请求，并且会在一定时间后完成这个操作。</p>
+</li>
+</ul>
+<h3 id="Python中的常用消息队列工具"><a href="#Python中的常用消息队列工具" class="headerlink" title="Python中的常用消息队列工具"></a>Python中的常用消息队列工具</h3><ul>
+<li>Celery<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Celery是一个简单，灵活且可靠的分布式系统，可以处理大量消息，同时为操作提供维护该系统所需的工具。是一个任务队列，着重于实时处理，同时还支持任务调度。</span><br></pre></td></tr></table></figure>
+GitHub: <a target="_blank" rel="noopener" href="https://github.com/celery/celery">https://github.com/celery/celery</a></li>
+</ul>
+<p>Stars: 16.9k</p>
+<ul>
+<li>RQ (Redis Queue)<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">RQ（Redis Queue）是一个简单的Python库，用于对作业进行排队并与工作人员在后台进行处理。它具有Redis的支持，并且设计为具有较低的进入门槛。它可以轻松地集成到您的Web堆栈中。</span><br></pre></td></tr></table></figure>
+GitHub: <a target="_blank" rel="noopener" href="https://github.com/rq/rq">https://github.com/rq/rq</a></li>
+</ul>
+<p>Stars: 7.6k</p>
+<ul>
+<li>huey<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hury是一个任务队列工具，具有简洁的API，支持Redis，SQLite以及内存内存储。</span><br></pre></td></tr></table></figure>
+GitHub: <a target="_blank" rel="noopener" href="https://github.com/coleifer/huey">https://github.com/coleifer/huey</a></li>
+</ul>
+<p>Stars: 3.4k</p>
+<ul>
+<li>Dramatiq<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Dramatiq是Python的后台任务处理库，其重点是简单性，可靠性和性能。</span><br></pre></td></tr></table></figure>
+GitHub: <a target="_blank" rel="noopener" href="https://github.com/Bogdanp/dramatiq">https://github.com/Bogdanp/dramatiq</a></li>
+</ul>
+<p>Stars: 2.5k</p>
+<ul>
+<li>Dask<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Dask是用于Python中并行计算的灵活库。其包含两部分，一是动态任务调度，这类似于 Airflow，Luigi，Celery或Make，但针对交互式计算工作负载进行了优化。二是“大数据”集合（如并行数组，数据框和列表），将诸如NumPy，Pandas或Python迭代器之类的通用接口扩展到内存或分布式环境。这些并行集合在动态任务计划程序之上运行。</span><br></pre></td></tr></table></figure>
+GitHub: <a target="_blank" rel="noopener" href="https://github.com/dask/dask">https://github.com/dask/dask</a></li>
+</ul>
+<p>Stars: 8.1k</p>
+<hr>
+<p>参考</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://v2ex.com/t/750920">关于 celery 的应用场景问题</a></li>
+</ul>
+</div></article></div></main><footer><div class="paginator"><a href="/2021/03/sparse_matrix/" class="next">NEXT</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'seansun';
+var disqus_identifier = '2021/03/queue/';
+var disqus_title = 'Python中的消息队列工具';
+var disqus_url = 'https://pstudio.me/2021/03/queue/';
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//seansun.disqus.com/count.js" async></script><div class="copyright"><p>© 2016 - 2024 <a href="https://pstudio.me">huangwang</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>
