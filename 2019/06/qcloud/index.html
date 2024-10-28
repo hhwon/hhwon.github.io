@@ -1,12 +1,5 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="author" content="huangwang"><meta name="description" content="技术宅（划掉）|（伪）二次元|"><meta name="theme-color" content="#DC143C"><link rel="alternative" href="/atom.xml" title="HUANGWANG'S BLOG" type="application/atom+xml"><link rel="icon" href="/favicon.png"><title>记一次腾讯云实例迁移 - HUANGWANG'S BLOG</title>
-<link rel="stylesheet" href="/css/main.css">
-
-<link rel="stylesheet" href="/js/fancybox/jquery.fancybox.min.css">
-<!--[if lt IE 9]><script>(function(a,b){a="abbr article aside audio bdi canvas data datalist details dialog figcaption figure footer header hgroup main mark meter nav output progress section summary template time video".split(" ");for(b=a.length-1;b>=0;b--)document.createElement(a[b])})()</script><![endif]-->
-<script src="/js/jquery-3.1.1.min.js"></script>
-
-<script src="/js/fancybox/jquery.fancybox.min.js"></script>
-<meta name="generator" content="Hexo 5.4.0"></head><body style="opacity:0"><header class="head"><h1 class="head-title u-fl"><a href="/">HUANGWANG'S BLOG</a></h1><nav class="head-nav u-fr"><ul class="head-nav__list"><li class="head-nav__item"><a class="head-nav__link" href="/archives">MENU</a></li><li class="head-nav__item"><a class="head-nav__link" href="/about">ABOUT</a></li></ul></nav></header><main class="main"><article class="post"><header class="post__head"> <time class="post__time" datetime="2019-06-26T02:59:22.000Z">June 26, 2019</time><h1 class="post__title"><a href="/2019/06/qcloud/">记一次腾讯云实例迁移</a></h1><div class="post__main echo"><p>迫于最近的一台Debian 9的实例即将过期，本着节约资金的原则，又开了一年的学生机。<span id="more"></span></p>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 记一次腾讯云实例迁移 · HUANGWANG'S BLOG</title><meta name="description" content="记一次腾讯云实例迁移 - huangwang"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="https://pstudio.me/atom.xml" title="HUANGWANG'S BLOG"><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="HUANGWANG'S BLOG" type="application/atom+xml">
+</head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/sunchongsheng" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/pinggod" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">记一次腾讯云实例迁移</h1><div class="post-info">Jun 26, 2019</div><div class="post-content"><p>迫于最近的一台Debian 9的实例即将过期，本着节约资金的原则，又开了一年的学生机。<span id="more"></span></p>
 <h3 id="原由"><a href="#原由" class="headerlink" title="原由"></a>原由</h3><p>1核1G, 50G数据盘，50G系统盘，当初搭建环境的时候，也是考虑十分不足，为今天埋下了坑。因为Mysql上要存储大量的数据（高达30G），故将mysql所在的文件夹<code>/usr</code>放在了数据盘，并清空了系统盘上的<code>/usr</code>内的所有文件（掩面）。</p>
 <h3 id="行动"><a href="#行动" class="headerlink" title="行动"></a>行动</h3><p>一开始迁移的时候是这么考虑的，将系统盘制作镜像，数据盘制作快照并新建硬盘，挂载在新的实例上。殊不知却忽视了制作系统镜像时的小提示</p>
 <blockquote>
@@ -22,20 +15,4 @@
 <p>接下来就是将数据盘上的内容全部转移到系统盘上，数据盘上<code>/usr</code>是无法直接umount的，我也是一头雾水，当时，接触到了VNC，一直想在其上突破，只可惜以失败告终。好在得到了Monad大佬的帮助，瞬时茅塞顿开。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mkdir /tmp/root                # 新建一文件夹用来挂载系统盘</span><br><span class="line">mount --bind / /tmp/root       # 将系统盘挂载至上面新建的文件夹</span><br><span class="line">rsync -av /usr /tmp/root/usr   # 将数据盘上的数据拷贝至系统盘中的/usr文件夹</span><br></pre></td></tr></table></figure>
 <p>注释或删掉<code>/etc/fstab</code>中自行配置的数据盘的相关配置，再重启实例大概就解决了。</p>
-</div></header><footer class="post__foot u-cf"><ul class="post__tag u-fl"><li class="post__tag__item"><a class="post__tag__link" href="/tags/Linux/">Linux</a></li></ul></footer></article><div id="disqus_thread"></div><script>var disqus_config = function () {
-  this.page.url = "https://pstudio.me/2019/06/qcloud/";
-  this.page.identifier = "2019/06/qcloud/";
-};
-
-(function () {
-  var d = document, s = d.createElement('script');
-  s.src = 'https://huangwang.disqus.com/embed.js';
-  s.setAttribute('data-timestamp', +new Date());
-  (d.head || d.body).appendChild(s);
-})();</script></main><footer class="foot"><div class="foot-copy">&copy; 2016-2024 huangwang</div></footer><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
-ga('create','UA-87613819-1');
-ga('send','pageview');</script>
-<script src="/js/scroller.js"></script>
-
-<script src="/js/main.js"></script>
-</body></html>
+</div></article></div></main><footer><div class="paginator"><a href="/2020/08/wordpress/" class="prev">PREV</a><a href="/2019/04/3years/" class="next">NEXT</a></div><div class="copyright"><p>© 2015 - 2024 <a href="https://pstudio.me">huangwang</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>

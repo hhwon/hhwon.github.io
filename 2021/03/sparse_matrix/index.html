@@ -1,12 +1,5 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="author" content="huangwang"><meta name="description" content="技术宅（划掉）|（伪）二次元|"><meta name="theme-color" content="#DC143C"><link rel="alternative" href="/atom.xml" title="HUANGWANG'S BLOG" type="application/atom+xml"><link rel="icon" href="/favicon.png"><title>在Python中如何快速组装稀疏矩阵 - HUANGWANG'S BLOG</title>
-<link rel="stylesheet" href="/css/main.css">
-
-<link rel="stylesheet" href="/js/fancybox/jquery.fancybox.min.css">
-<!--[if lt IE 9]><script>(function(a,b){a="abbr article aside audio bdi canvas data datalist details dialog figcaption figure footer header hgroup main mark meter nav output progress section summary template time video".split(" ");for(b=a.length-1;b>=0;b--)document.createElement(a[b])})()</script><![endif]-->
-<script src="/js/jquery-3.1.1.min.js"></script>
-
-<script src="/js/fancybox/jquery.fancybox.min.js"></script>
-<meta name="generator" content="Hexo 5.4.0"></head><body style="opacity:0"><header class="head"><h1 class="head-title u-fl"><a href="/">HUANGWANG'S BLOG</a></h1><nav class="head-nav u-fr"><ul class="head-nav__list"><li class="head-nav__item"><a class="head-nav__link" href="/archives">MENU</a></li><li class="head-nav__item"><a class="head-nav__link" href="/about">ABOUT</a></li></ul></nav></header><main class="main"><article class="post"><header class="post__head"> <time class="post__time" datetime="2021-03-19T16:59:16.000Z">March 20, 2021</time><h1 class="post__title"><a href="/2021/03/sparse_matrix/">在Python中如何快速组装稀疏矩阵</a></h1><div class="post__main echo"><h2 id="在Python中如何快速组装稀疏矩阵"><a href="#在Python中如何快速组装稀疏矩阵" class="headerlink" title="在Python中如何快速组装稀疏矩阵"></a>在Python中如何快速组装稀疏矩阵</h2><p>在采用Python编写数值计算方法的求解器时，往往需要自己组装求解的刚度矩阵，当矩阵带宽比较大时，采用稠密矩阵（尽管直接组装速度会快些）常常会遇到内存受限的问题。此时，我们会考虑采用稀疏矩阵来存储，这样可以省去为零位置的值，大大节省内存或磁盘的占用。<span id="more"></span><br>在Python中组装刚度矩阵时，这里采用NumPy以及SciPy两个科学计算依赖库。</p>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 在Python中如何快速组装稀疏矩阵 · HUANGWANG'S BLOG</title><meta name="description" content="在Python中如何快速组装稀疏矩阵 - huangwang"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="https://pstudio.me/atom.xml" title="HUANGWANG'S BLOG"><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="HUANGWANG'S BLOG" type="application/atom+xml">
+</head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="http://weibo.com/sunchongsheng" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/pinggod" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">在Python中如何快速组装稀疏矩阵</h1><div class="post-info">Mar 20, 2021</div><div class="post-content"><h2 id="在Python中如何快速组装稀疏矩阵"><a href="#在Python中如何快速组装稀疏矩阵" class="headerlink" title="在Python中如何快速组装稀疏矩阵"></a>在Python中如何快速组装稀疏矩阵</h2><p>在采用Python编写数值计算方法的求解器时，往往需要自己组装求解的刚度矩阵，当矩阵带宽比较大时，采用稠密矩阵（尽管直接组装速度会快些）常常会遇到内存受限的问题。此时，我们会考虑采用稀疏矩阵来存储，这样可以省去为零位置的值，大大节省内存或磁盘的占用。<span id="more"></span><br>在Python中组装刚度矩阵时，这里采用NumPy以及SciPy两个科学计算依赖库。</p>
 <ul>
 <li><p>NumPy</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">NumPy是Python中科学计算的基本软件包。它是一个Python库，提供多维数组对象，各种派生对象（例如蒙版数组和矩阵）以及各种例程，用于对数组进行快速操作，包括数学，逻辑，形状处理，排序，选择，I/O ，离散傅立叶变换，基本线性代数，基本统计运算，随机模拟等等。</span><br><span class="line"></span><br><span class="line">在安装时需注意其Fortran或C++依赖库laspack、bla等是否存在。推荐使用conda进行安装，其默认采用Intel数学核心库进行编译。MKL较OpenBLAS更快以及更稳定。</span><br></pre></td></tr></table></figure></li>
@@ -32,20 +25,4 @@
 <li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/40631883/fast-way-to-find-nonzero-elements-positions-in-2d-array-in-python">Fast way to find nonzero elements positions in 2d array in Python</a></li>
 <li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/64350649/fastest-way-to-concatenate-slices-of-numpy-array">Fastest way to concatenate slices of numpy array</a></li>
 </ul>
-</div></header><footer class="post__foot u-cf"><ul class="post__tag u-fl"><li class="post__tag__item"><a class="post__tag__link" href="/tags/Tech/">Tech</a></li></ul></footer></article><div id="disqus_thread"></div><script>var disqus_config = function () {
-  this.page.url = "https://pstudio.me/2021/03/sparse_matrix/";
-  this.page.identifier = "2021/03/sparse_matrix/";
-};
-
-(function () {
-  var d = document, s = d.createElement('script');
-  s.src = 'https://huangwang.disqus.com/embed.js';
-  s.setAttribute('data-timestamp', +new Date());
-  (d.head || d.body).appendChild(s);
-})();</script></main><footer class="foot"><div class="foot-copy">&copy; 2016-2024 huangwang</div></footer><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
-ga('create','UA-87613819-1');
-ga('send','pageview');</script>
-<script src="/js/scroller.js"></script>
-
-<script src="/js/main.js"></script>
-</body></html>
+</div></article></div></main><footer><div class="paginator"><a href="/2021/03/queue/" class="prev">PREV</a><a href="/2020/08/pythonocc_install/" class="next">NEXT</a></div><div class="copyright"><p>© 2015 - 2024 <a href="https://pstudio.me">huangwang</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>
